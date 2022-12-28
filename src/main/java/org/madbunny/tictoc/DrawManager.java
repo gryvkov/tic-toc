@@ -50,52 +50,56 @@ public class DrawManager {
         for (StripePoints sp : deskBorders) {
             ctx.screen().drawStripe(sp.begin, sp.end, 2, BORDER_PAINT);
         }
-
-
     }
 
-    public void drawZero(int id) {
-        float x = cellBorders.get(id).x - cellSize / 2;
-        float y = cellBorders.get(id).y - cellSize / 2;
+    public void drawCell(Cell cell) {
+        float x = cell.x * cellSize + cellSize / 2;
+        float y = cell.y * cellSize + cellSize / 2;
+        if (cell.state == Cell.Value.ZERO) {
+            drawZero(x, y);
+        } else if (cell.state == Cell.Value.CROSS) {
+            drawCross(x, y);
+        }
+    }
+
+    private void drawZero(float x, float y) {
         for (StripePoints sp : deskBorders) {
             ctx.screen().drawCircle(new Point2D(x, y), RADIUS, ZERO_PAINT);
         }
-
     }
 
-    public void drawCross(int id) {
-        float x = cellBorders.get(id).x - cellSize / 2;
-        float y = cellBorders.get(id).y - cellSize / 2;
+    private void drawCross(float x, float y) {
         ctx.screen().drawLine(new Point2D(x, y), new Point2D(x + RADIUS, y + RADIUS), ZERO_PAINT.color());
         ctx.screen().drawLine(new Point2D(x, y), new Point2D(x + RADIUS, y - RADIUS), ZERO_PAINT.color());
         ctx.screen().drawLine(new Point2D(x, y), new Point2D(x - RADIUS, y + RADIUS), ZERO_PAINT.color());
         ctx.screen().drawLine(new Point2D(x, y), new Point2D(x - RADIUS, y - RADIUS), ZERO_PAINT.color());
     }
 
-    public void drawLine(int[] indexes){
+    public void drawLine(int[] indexes) {
         float sx = cellBorders.get(indexes[0]).x - cellSize / 2;
         float sy = cellBorders.get(indexes[0]).y - cellSize / 2;
 
         float ex = cellBorders.get(indexes[2]).x - cellSize / 2;
         float ey = cellBorders.get(indexes[2]).y - cellSize / 2;
 
-        ctx.screen().drawLine(new Point2D(sx,sy), new Point2D(ex,ey),ZERO_PAINT.color());
+        ctx.screen().drawLine(new Point2D(sx, sy), new Point2D(ex, ey), ZERO_PAINT.color());
     }
 
     private record StripePoints(Point2D begin, Point2D end) {
     }
 
-    public void checkArea(float x, float y, Desk desk) {
-        int dx = (int) Math.floor(x/cellSize);
-        int dy = (int) Math.floor(y/cellSize);
+    public DeskCoordinates getCellCoordinates(float x, float y) {
+        int dx = (int) Math.floor(x / cellSize);
+        int dy = (int) Math.floor(y / cellSize);
 
-        desk.fillCell(dx, dy);
-
+        return new DeskCoordinates(dx, dy);
     }
 
 
 }
 
+record DeskCoordinates(int x, int y) {
+}
 
 class Border {
     public float x;

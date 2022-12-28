@@ -3,6 +3,8 @@ package org.madbunny.tictoc;
 
 import org.madbunny.vsrat2d.api.*;
 
+import java.util.Iterator;
+
 
 public class GameCore {
     private static final Color BACKGROUND_COLOR = new Color(0.2f, 0.2f, 0.2f);
@@ -29,7 +31,11 @@ public class GameCore {
         ctx.screen().clear(BACKGROUND_COLOR);
         DrawManager dm = new DrawManager(ctx);
         dm.drawDesk();
-        desk.fillDesk(dm);
+        for (Iterator<Cell> it = desk.getCells(); it.hasNext(); ) {
+            Cell cell = it.next();
+            dm.drawCell(cell);
+        }
+
         int[] winner = desk.findWinner();
         if (winner != null) {
             dm.drawLine(winner);
@@ -37,7 +43,8 @@ public class GameCore {
 
         MouseInput mouse = ctx.mouse();
         if (mouse.isButtonClicked(MouseButton.LEFT)) {
-            dm.checkArea(mouse.getMousePosition().x(), mouse.getMousePosition().y(), desk);
+            var c = dm.getCellCoordinates(mouse.getMousePosition().x(), mouse.getMousePosition().y());
+            desk.fillCell(c.x(), c.y());
         }
         if (mouse.isButtonClicked(MouseButton.RIGHT)) {
             desk.clean();

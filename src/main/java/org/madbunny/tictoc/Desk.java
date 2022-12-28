@@ -2,14 +2,12 @@ package org.madbunny.tictoc;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Desk {
     private static final ArrayList<Cell> cells = new ArrayList<>();
-    private boolean turn = false;
 
-    public boolean isTurn() {
-        return turn;
-    }
+    private boolean turn = false;
 
     private int[][] sequences = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
 
@@ -26,15 +24,8 @@ public class Desk {
         cells.add(8, new Cell(2, 2));
     }
 
-    public void fillDesk(DrawManager dm) {
-        for (int i = 0; i <= 8; i++) {
-            Cell c = cells.get(i);
-            if (c.state == Cell.Value.CROSS) {
-                dm.drawCross(i);
-            } else if (c.state == Cell.Value.ZERO) {
-                dm.drawZero(i);
-            }
-        }
+    public Iterator<Cell> getCells() {
+        return cells.iterator();
     }
 
     public void fillCell(int x, int y) {
@@ -62,7 +53,7 @@ public class Desk {
     public int[] findWinner() {
         int zero = 0;
         int cross = 0;
-        String winner = "empty";
+
         for (int[] sq : sequences) {
             for (int i : sq) {
                 Cell c = cells.get(i);
@@ -87,8 +78,8 @@ public class Desk {
 
 
 class Cell {
-    public int x;
-    public int y;
+    public final int x;
+    public final int y;
     public Value state;
 
     public enum Value {EMPTY, CROSS, ZERO}
